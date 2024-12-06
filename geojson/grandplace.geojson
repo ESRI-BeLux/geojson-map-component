@@ -1,0 +1,19 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [4.3499, 50.8467],
+        [4.3524, 50.8467],
+        [4.3524, 50.8456],
+        [4.3499, 50.8456],
+        [4.3499, 50.8467]
+      ]
+    ]
+  },
+  "properties": {
+    "name": "Grand Place",
+    "description": "Historic central square in Brussels"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [
+      [4.3425, 50.8585],
+      [4.35, 50.858],
+      [4.357, 50.8575]
+    ]
+  },
+  "properties": {
+    "name": "Brussels Canal Segment",
+    "description": "A section of the Brussels Canal"
+  }
+}

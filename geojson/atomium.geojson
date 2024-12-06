@@ -1,0 +1,11 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [4.3413971, 50.8948399]
+  },
+  "properties": {
+    "name": "Atomium",
+    "description": "Iconic building and museum in Brussels"
+  }
+}

@@ -10,11 +10,53 @@ const arcgis = {
   },
 };
 
-async function createMap() {
-  const [Map, MapView, GraphicsLayer] = await arcgis.import([
+async function convertToGeoJSON(geometry) {
+  const [webMercatorUtils] = await arcgis.import([
+    "esri/geometry/support/webMercatorUtils",
+  ]);
+
+  const geoJson = {
+    type: "Feature",
+    geometry: {
+      type: "",
+      coordinates: [],
+    },
+    properties: {},
+  };
+
+  switch (geometry.type) {
+    case "point":
+      geoJson.geometry.type = "Point";
+      geoJson.geometry.coordinates = [geometry.longitude, geometry.latitude];
+      break;
+
+    case "polyline":
+      geoJson.geometry.type = "LineString";
+      geoJson.geometry.coordinates = geometry.paths.map((path) =>
+        path.map((point) => webMercatorUtils.xyToLngLat(point[0], point[1]))
+      );
+      break;
+
+    case "polygon":
+      geoJson.geometry.type = "Polygon";
+      geoJson.geometry.coordinates = geometry.rings.map((ring) =>
+        ring.map((point) => webMercatorUtils.xyToLngLat(point[0], point[1]))
+      );
+      break;
+
+    default:
+      throw new Error("Unsupported geometry type: " + geometry.type);
+  }
+
+  return geoJson;
+}
+
+async function createMap(onCreate) {
+  const [Map, MapView, GraphicsLayer, Sketch] = await arcgis.import([
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/GraphicsLayer",
+    "esri/widgets/Sketch",
   ]);
 
   const map = new Map({
@@ -31,6 +73,23 @@ async function createMap() {
   // Create a graphics layer
   const graphicsLayer = new GraphicsLayer();
   view.map.add(graphicsLayer);
+  // Add a Sketch widget
+  const sketch = new Sketch({
+    layer: graphicsLayer,
+    view: view,
+    availableCreateTools: ["point", "polyline", "polygon", "rectangle"],
+  });
+
+  view.ui.add(sketch, "top-right");
+
+  sketch.on("create", async (event) => {
+    if (event.state === "complete") {
+      const geometry = event.graphic.geometry;
+
+      const geoJson = await convertToGeoJSON(geometry);
+      onCreate(geoJson);
+    }
+  });
 
   return [map, view, graphicsLayer];
 }
@@ -38,8 +97,8 @@ async function createMap() {
 export class Map {
   constructor() {}
 
-  async initialize() {
-    [this.map, this.view, this.graphicsLayer] = await createMap();
+  async initialize(onCreate) {
+    [this.map, this.view, this.graphicsLayer] = await createMap(onCreate);
   }
 
   /**

@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "resolveJsonModule": true,
+      "target": "ES2018",
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "esModuleInterop": true,
+      "strict": true,
+      "jsx": "preserve",
+      "sourceMap": true,
+      "outDir": "./dist"
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
+  }

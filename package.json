@@ -1,0 +1,26 @@
+{
+  "name": "geojson-component",
+  "version": "1.0.0",
+  "description": "Map component accepting geojson",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "webpack serve",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Esri BeLux",
+  "license": "ISC",
+  "dependencies": {
+    "@arcgis/core": "^4.31.6",
+    "@arcgis/map-components": "^4.31.6"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.0"
+  }
+}

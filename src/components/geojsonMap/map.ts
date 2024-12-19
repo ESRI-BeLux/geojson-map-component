@@ -1,7 +1,6 @@
 import Map from "@arcgis/core/Map.js";
 import MapView from "@arcgis/core/views/MapView";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import Sketch from "@arcgis/core/widgets/Sketch.js";
 import Point from "@arcgis/core/geometry/Point.js";
 import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol.js";
 import Graphic from "@arcgis/core/Graphic";
@@ -14,7 +13,9 @@ import {
   GeoJSONFeaturePoint,
   GeoJSONFeaturePolygon,
 } from "./types";
-import "./map.css";
+import Basemap from "@arcgis/core/Basemap";
+import WebMap from "@arcgis/core/WebMap.js";
+import TileLayer from "@arcgis/core/layers/TileLayer";
 
 function convertToGeoJSON(geometry: __esri.Geometry) {
   switch (geometry.type) {
@@ -62,18 +63,34 @@ function convertToGeoJSON(geometry: __esri.Geometry) {
 }
 
 async function createMap() {
-  const map = new Map({
-    basemap: "streets-vector",
+  const streetsLayer = new TileLayer({
+    url: "https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer",
   });
+
+  const basemap = new Basemap({
+    baseLayers: [streetsLayer],
+  });
+
+  const map = new WebMap({
+    basemap,
+  });
+
+  const belgiumExtent = {
+    xmin: 2.5,
+    ymin: 49,
+    xmax: 6.4,
+    ymax: 51.8,
+    spatialReference: { wkid: 4326 }, // WGS84 spatial reference
+  };
 
   const view = new MapView({
     container: "mapDiv",
-    map: map,
+    map,
+    extent: belgiumExtent,
   });
 
-  await view.when();
-
   const graphicsLayer = new GraphicsLayer();
+
   view.map.add(graphicsLayer);
 
   return { map, view, graphicsLayer };
@@ -171,6 +188,7 @@ class GeoJsonMap {
    * - "Polygon": Creates a semi-transparent blue polygon with a black outline.
    * - "LineString": Creates an orange solid line.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async addGeoJson(id: string, geojson: any) {
     const geometry = geojson.geometry;
     const attributes = geojson.properties;
@@ -230,6 +248,8 @@ class GeoJsonMap {
         attributes: { id, ...attributes },
       });
     }
+
+    console.log("should add");
 
     if (graphic) this.graphicsLayer?.add(graphic);
   }

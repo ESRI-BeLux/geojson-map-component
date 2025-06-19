@@ -8,6 +8,9 @@ import Polygon from "@arcgis/core/geometry/Polygon.js";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol.js";
 import Polyline from "@arcgis/core/geometry/Polyline.js";
 import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol.js";
+import Search from "@arcgis/core/widgets/Search.js";
+import Locate from "@arcgis/core/widgets/Locate.js";
+import "./map.css";
 import {
   GeoJSONFeatureLineString,
   GeoJSONFeaturePoint,
@@ -87,6 +90,21 @@ async function createMap() {
     container: "mapDiv",
     map,
     extent: belgiumExtent,
+  });
+  // Add Search widget
+  const searchWidget = new Search({
+    view: view,
+  });
+  view.ui.add(searchWidget, {
+    position: "top-right",
+  });
+
+  // Add Locate widget
+  const locateWidget = new Locate({
+    view: view,
+  });
+  view.ui.add(locateWidget, {
+    position: "top-right",
   });
 
   const graphicsLayer = new GraphicsLayer();
